@@ -1,0 +1,62 @@
+body {
+  font-family: arial;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.title {
+  font-size: 35px;
+}
+
+.license-form {
+  margin: 0 auto;
+  max-width: 500px;
+}
+
+.input-group {
+  margin-bottom: 30px;
+}
+
+.input-group input {
+  padding: 8px;
+  width: 350px;
+}
+
+.input-group input:focus {
+  outline-color: navy;
+}
+
+.input-group button {
+  background: #f0f0f0;
+  padding: 8px;
+  cursor: pointer;
+  min-width: 80px;
+  border: 2px solid #b0b0b0;
+  outline: none;
+}
+
+.disclaimer p:last-child {
+  margin-bottom: 0;
+}
+
+.disclaimer {
+  font-size: 0.85rem;
+}
+
+.disclaimer p {
+  color: #93989c;
+}
+
+p#error {
+  color: red;
+  text-align: left;
+  padding-left: 25px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+a {
+  color: navy;
+}
