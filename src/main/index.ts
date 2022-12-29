@@ -1,12 +1,9 @@
 import electron from 'electron'
 import fs, { promises as fsP } from 'fs'
-import { createRequire } from 'module'
 import path from 'path'
 // @ts-ignore
 import * as md from 'machine-digest'
 import * as client from './client'
-
-const requir = createRequire(path.resolve(__dirname))
 
 export class Lisenser {
     productId: string
@@ -79,26 +76,31 @@ export class Lisenser {
         return client.getTrialStatus(this.productId, this.machineId)
     }
 
-    async createLicenseKeyWindow (iconPath: string, urlToBuy: string, overrideAppName: string): Promise<void> {
+    async createLicenseKeyWindow (iconPath: string, urlToBuy: string, overrideAppName?: string): Promise<void> {
+        const appName = overrideAppName || this.appName
         const window = new electron.BrowserWindow({
             width: 600,
             height: 300,
             icon: iconPath,
             minWidth: 600,
             minHeight: 300,
+            title: `${appName} - License Key`,
             webPreferences: {
-                preload: path.join(requir.resolve('electron-lisenser'), '../preloads/foractivate.js')
+                preload: path.join(callsites()[0].getFileName()!, '../preloads/foractivate.js')
             },
         })
-        const appName = overrideAppName || this.appName
-        window.setTitle(`${appName} - License Key`)
-        window.loadFile(path.join(requir.resolve('electron-lisenser'), '../renderer/activate.html'))
+
+        window.loadFile(path.join(callsites()[0].getFileName()!, '../renderer/activate.html'))
 
         // disable dev console
+        // @todo: consider making this optional
         const menu = electron.Menu.buildFromTemplate([])
         electron.Menu.setApplicationMenu(menu)
 
-        return new Promise((resolve, _) => {
+        return new Promise((resolve, reject) => {
+            // @todo: make this optional as well
+            window.on('close', () => reject(new Error('Activation window was closed before activation')))
+
             electron.ipcMain.handle('license:activate', async (_, key: string): Promise<string | void> => {
                 const status = await this.activateLicenseKey(key)
                 if (!status.isActive) {
@@ -122,7 +124,7 @@ export class Lisenser {
                         return
                     }
 
-                    throw error
+                    reject(error)
                 }
 
                 window.close()
@@ -142,4 +144,16 @@ class CustomError extends Error {
         super(message)
         this.title = title
     }
+}
+
+// adding code from https://github.com/sindresorhus/callsites
+// directly since importing its npm package keeps failing
+// due to esm module incompatibility
+function callsites(): {getFileName: () => string}[] {
+    const _prepareStackTrace = Error.prepareStackTrace
+    Error.prepareStackTrace = (_, stack) => stack
+    const stack = new Error().stack!.slice(1) // eslint-disable-line unicorn/error-message
+    Error.prepareStackTrace = _prepareStackTrace
+    // @ts-ignore
+    return stack
 }
