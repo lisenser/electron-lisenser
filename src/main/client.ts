@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = 'https://api.lisenser.com'
+const API_URL = 'https://api.lisenser.com/v1'
 
 export interface LicenseRequest {
     licenseKey: string
@@ -22,23 +22,23 @@ export interface TrialStatus {
 
 export async function getLicenseStatus (req: LicenseRequest): Promise<LicenseStatus> {
     const { licenseKey: key, machineId, productId} = req
-    const url = `${API_URL}/license/${productId}/status`
-    const resp = await axios.post<{data: LicenseStatus}>(url, { key, machineId })
+    const url = `${API_URL}/license/status`
+    const resp = await axios.post<{data: LicenseStatus}>(url, { key, machineId, productId })
 
     return resp.data.data
 }
 
 export async function activateLicenseKey (req: LicenseRequest): Promise<LicenseStatus> {
     const { licenseKey: key, machineId, productId} = req
-    const url = `${API_URL}/license/${productId}/activate`
-    const resp = await axios.post<{data: LicenseStatus}>(url, { key, machineId })
+    const url = `${API_URL}/license/activate`
+    const resp = await axios.post<{data: LicenseStatus}>(url, { key, machineId, productId })
 
     return resp.data.data
 }
 
 export async function getTrialStatus (productId: string, machineId: string): Promise<TrialStatus> {
-    const url = `${API_URL}/trial/${productId}/status`
-    const resp = await axios.post<{data: TrialStatus}>(url, { machineId })
+    const url = `${API_URL}/trial/status`
+    const resp = await axios.post<{data: TrialStatus}>(url, { machineId, productId })
 
     return resp.data.data
 }
@@ -46,8 +46,8 @@ export async function getTrialStatus (productId: string, machineId: string): Pro
 export type TrialActivationStatus = 'started' | 'not-allowed' | 'conflict'
 
 export async function startTrial (productId: string, machineId: string): Promise<TrialActivationStatus> {
-    const url = `${API_URL}/trial/${productId}/activate`
-    const resp = await axios.post<{data: TrialActivationStatus}>(url, { machineId })
+    const url = `${API_URL}/trial/activate`
+    const resp = await axios.post<{data: TrialActivationStatus}>(url, { machineId, productId })
 
     return resp.data.data
 }
