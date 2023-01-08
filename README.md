@@ -2,6 +2,43 @@
 
 Electron/Javascript Client for the Lisenser Service
 
+## Installation
+
+`npm install electron-lisenser`
+
+## Quick Start
+
+```ts
+import { Lisenser } from 'lisenser'
+
+const lisenser = new Lisenser('<your-product-id>', 'My App')
+
+async function checkLicense() {
+  const status = await lisenser.getLicenseStatus()
+
+  switch (status.status) {
+    case 'no-key':
+      console.log('No license key found')
+      break
+    case 'invalid':
+      console.log('Invalid license key')
+      break
+    case 'expired':
+      console.log(`License expired ${status.daysToExpiry} days ago`)
+      break
+    case 'active':
+      console.log(`License will expire in ${status.daysToExpiry} days`)
+      break
+  }
+}
+
+checkLicense()
+```
+
+## API Reference
+
+### Lisenser
+
 An instance of the `Lisenser` class is used to manage
 the license status of an Electron app.
 
