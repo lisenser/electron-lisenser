@@ -3,7 +3,7 @@ import fs, { promises as fsP } from 'fs'
 import path from 'path'
 // @ts-ignore
 import * as md from 'machine-digest'
-import * as client from './client'
+import * as client from 'lisenser'
 
 /**
  * An instance of the `Lisenser` class is used to manage
