@@ -109,7 +109,7 @@ The current status of the trial
 
 ---
 
-##### `createLicenseKeyWindow(iconPath: string, urlToBuy: string, overrideAppName?: string): Promise<void>`
+##### `createLicenseKeyWindow(iconPath: string, urlToBuy: string, overrideAppName?: string): Promise<boolean>`
 
 Opens a window for entering a license key.
 
@@ -118,5 +118,9 @@ Opens a window for entering a license key.
 - `iconPath` The path to the app icon
 - `urlToBuy` The URL to purchase a license key
 - `overrideAppName` The name of the app to display in the window. If not provided, the `appName` provided in the constructor will be used.
+
+###### Returns
+
+A boolean that is `true` if the License was successfully activated, and `false` otherwise.
 
 ---

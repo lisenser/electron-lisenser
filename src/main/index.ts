@@ -141,7 +141,7 @@ export class Lisenser {
      * @param {string} [overrideAppName] An optional name to override the app's default name
      * @returns {Promise<void>}
      */
-    async createLicenseKeyWindow (iconPath: string, urlToBuy: string, overrideAppName?: string): Promise<void> {
+    async createLicenseKeyWindow (iconPath: string, urlToBuy: string, overrideAppName?: string): Promise<boolean> {
         const appName = overrideAppName || this.appName
         const window = new electron.BrowserWindow({
             width: 600,
@@ -162,9 +162,13 @@ export class Lisenser {
         const menu = electron.Menu.buildFromTemplate([])
         electron.Menu.setApplicationMenu(menu)
 
+        let isResolved = false
         return new Promise((resolve, reject) => {
-            // @todo: make this optional as well
-            window.on('close', () => reject(new Error('Activation window was closed before activation')))
+            window.on('close', () => {
+                if (!isResolved) {
+                    resolve(false)
+                }
+            })
 
             electron.ipcMain.handle('license:activate', async (_, key: string): Promise<string | void> => {
                 const status = await this.activateLicenseKey(key)
@@ -178,6 +182,8 @@ export class Lisenser {
                         `${appName} - License ${status.status.toUpperCase()}`,
                         messages[status.status]
                     )
+
+                    return
                 }
 
                 try {
@@ -192,8 +198,9 @@ export class Lisenser {
                     reject(error)
                 }
 
+                isResolved = true
                 window.close()
-                resolve()
+                resolve(true)
             })
 
             electron.ipcMain.on('license:buy', () => {
