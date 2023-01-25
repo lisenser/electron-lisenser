@@ -4,6 +4,7 @@ import path from 'path'
 // @ts-ignore
 import * as md from 'machine-digest'
 import * as client from 'lisenser'
+import { buildMenu } from './menu'
 
 /**
  * An instance of the `Lisenser` class is used to manage
@@ -157,10 +158,9 @@ export class Lisenser {
 
         window.loadFile(path.join(callsites()[0].getFileName()!, '../renderer/activate.html'))
 
-        // disable dev console
+        // disable dev console and enable copy-pasting
         // @todo: consider making this optional
-        const menu = electron.Menu.buildFromTemplate([])
-        electron.Menu.setApplicationMenu(menu)
+        electron.Menu.setApplicationMenu(buildMenu(window, appName))
 
         let isResolved = false
         return new Promise((resolve, reject) => {
