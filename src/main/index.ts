@@ -140,9 +140,10 @@ export class Lisenser {
      * @param {string} iconPath The file path to the app's icon
      * @param {string} urlToBuy The URL where the user can purchase a license key
      * @param {string} [overrideAppName] An optional name to override the app's default name
+     * @param {boolean} [setMenu=true] Whether to allow Lisenser replace the menu for the app or not.
      * @returns {Promise<void>}
      */
-    async createLicenseKeyWindow (iconPath: string, urlToBuy: string, overrideAppName?: string): Promise<boolean> {
+    async createLicenseKeyWindow (iconPath: string, urlToBuy: string, overrideAppName?: string, setMenu = true): Promise<boolean> {
         const appName = overrideAppName || this.appName
         const window = new electron.BrowserWindow({
             width: 600,
@@ -159,8 +160,9 @@ export class Lisenser {
         window.loadFile(path.join(callsites()[0].getFileName()!, '../renderer/activate.html'))
 
         // disable dev console and enable copy-pasting
-        // @todo: consider making this optional
-        electron.Menu.setApplicationMenu(buildMenu(window, appName))
+        if (setMenu) {
+            electron.Menu.setApplicationMenu(buildMenu(window, appName))
+        }
 
         let isResolved = false
         return new Promise((resolve, reject) => {
