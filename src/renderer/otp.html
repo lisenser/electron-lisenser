@@ -10,22 +10,21 @@
     <div class="container">
       <form class="license-form">
         <div class="form-header">
-          <h3 class="title">License Activation</h3>
-          <p class="subtitle">Enter your license key to activate the product</p>
+          <h3 class="title">One Time Passcode</h3>
+          <p class="subtitle">Your License has already been activated on a different device. Please enter the 4 digit passcode sent to your email address to disconnect it from the other device.</p>
         </div>
         <p id="error"></p>
         <div class="input-group">
-          <input type="text" name="key" required="true" placeholder="Enter your License Key" autocomplete="off">
+          <input type="text" name="otp" required="true" placeholder="Enter 4 digit Passcode (e.g 4321)" autocomplete="off">
           <button type="submit">
-            <span>Activate</span>
+            <span>Reset License</span>
           </button>
         </div>
         <div class="form-footer">
-          <p>Please ensure your internet connection is enabled</p>
-          <a href="#" class="cta-link">Buy License</a>
+          <a href="#" class="cta-link">Resend Code</a>
         </div>
       </form>
     </div>
-    <script type="text/javascript" src="activate.js"></script>
+    <script type="text/javascript" src="otp.js"></script>
   </body>
 </html>

@@ -21,7 +21,6 @@
         "strictNullChecks": true,
         "strict": true,
         "pretty": true,
-        "suppressImplicitAnyIndexErrors": true,
         "target": "es2016",
         "outDir": "dist"
     },

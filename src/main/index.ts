@@ -115,7 +115,7 @@ export class Lisenser {
         await this.storeLicenseKeyLocally(licenseKey)
         return status
     }
- 
+
     /**
      * Activates the trial for this product.
      *
@@ -132,6 +132,54 @@ export class Lisenser {
      */
     async getTrialStatus (): Promise<client.TrialStatus> {
         return client.getTrialStatus(this.productId, this.machineId)
+    }
+
+    /**
+     * Generates a third party token for the given license.
+     * @param req The license request.
+     * @returns {Promise<string>} The token generated
+     */
+    async generate3rdPartyToken (): Promise<string> {
+        const licenseKey = await this.getLocallyStoredLicenseKey()
+        if (!licenseKey) {
+            throw new Error('Could not find user License key')
+        }
+
+        const req = { machineId: this.machineId, productId: this.productId, licenseKey }
+
+        return client.generate3rdPartyToken(req)
+    }
+
+    async createOtpWindow (iconPath: string, appName: string, licenseKey: string): Promise<void> {
+        const window = new electron.BrowserWindow({
+            width: 500,
+            height: 300,
+            icon: iconPath,
+            minWidth: 500,
+            minHeight: 300,
+            title: `${appName} - One Time Code`,
+            webPreferences: {
+                preload: path.join(callsites()[0].getFileName()!, '../preloads/forotp.js')
+            },
+        })
+
+        window.loadFile(path.join(callsites()[0].getFileName()!, '../renderer/otp.html'))
+
+        return new Promise(async (resolve) => {
+            window.on('close', () => resolve())
+
+            electron.ipcMain.handle('license:reset', async (_event, otp: string): Promise<boolean> => {
+                const hasReset = await client.resetLicense(otp, this.productId, licenseKey).catch(() => false)
+
+                return hasReset
+            })
+
+            electron.ipcMain.handle('license:otp:resend', async () => {
+                await client.requestOtpForLicenseReset(this.productId, licenseKey)
+            })
+
+            await client.requestOtpForLicenseReset(this.productId, licenseKey)
+        })
     }
 
     /**
@@ -174,16 +222,30 @@ export class Lisenser {
 
             electron.ipcMain.handle('license:activate', async (_, key: string): Promise<string | void> => {
                 const status = await this.activateLicenseKey(key)
-                if (!status.isActive) {
-                    const messages = {
+                if (!status.isActive && !status.isConflict) {
+                    const messages: Record<client.LicenseStatus['status'], string> = {
                         invalid: 'The License Key provided is invalid.',
-                        expired: 'The Licens Key provided has expired.'
+                        expired: 'The Licens Key provided has expired.',
+                        // a case for these keys won't happen
+                        active: '--',
+                        'no-key': '--'
                     }
 
                     electron.dialog.showErrorBox(
                         `${appName} - License ${status.status.toUpperCase()}`,
                         messages[status.status]
                     )
+
+                    return
+                }
+
+                if (status.isConflict) {
+                    window.hide()
+                    // if license is activated elsewere, we give user the
+                    // option to disconnect it from that machine using otp.
+                    await this.createOtpWindow(iconPath, appName, key)
+                    // show the license key window once the otp window is resolved.
+                    window.show()
 
                     return
                 }

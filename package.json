@@ -1,6 +1,6 @@
 {
   "name": "electron-lisenser",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "An electronjs client for Lisenser service",
   "source": "src/index.ts",
   "main": "dist/main.js",
@@ -38,7 +38,7 @@
     "electron": ">=16.0.0"
   },
   "dependencies": {
-    "lisenser": "^0.0.2",
+    "lisenser": "^0.0.3",
     "machine-digest": "^0.0.7"
   },
   "devDependencies": {

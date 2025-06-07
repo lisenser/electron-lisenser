@@ -8,4 +8,8 @@ assert.equal(fs.existsSync("./dist/renderer/activate.js"), true);
 assert.equal(fs.existsSync("./dist/renderer/style.css"), true);
 assert.equal(fs.existsSync("./dist/preloads/foractivate.js"), true);
 
+assert.equal(fs.existsSync("./dist/renderer/otp.html"), true);
+assert.equal(fs.existsSync("./dist/renderer/otp.js"), true);
+assert.equal(fs.existsSync("./dist/preloads/forotp.js"), true);
+
 console.log("OK!");
