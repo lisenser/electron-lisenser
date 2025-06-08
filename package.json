@@ -1,6 +1,6 @@
 {
   "name": "electron-lisenser",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "An electronjs client for Lisenser service",
   "source": "src/index.ts",
   "main": "dist/main.js",

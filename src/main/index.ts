@@ -153,10 +153,10 @@ export class Lisenser {
     async createOtpWindow (iconPath: string, appName: string, licenseKey: string): Promise<void> {
         const window = new electron.BrowserWindow({
             width: 500,
-            height: 350,
+            height: 375,
             icon: iconPath,
             minWidth: 500,
-            minHeight: 350,
+            minHeight: 375,
             title: `${appName} - One Time Code`,
             webPreferences: {
                 preload: path.join(callsites()[0].getFileName()!, '../preloads/forotp.js')
@@ -199,10 +199,10 @@ export class Lisenser {
         const appName = overrideAppName || this.appName
         const window = new electron.BrowserWindow({
             width: 600,
-            height: 350,
+            height: 365,
             icon: iconPath,
             minWidth: 600,
-            minHeight: 350,
+            minHeight: 365,
             title: `${appName} - License Key`,
             webPreferences: {
                 preload: path.join(callsites()[0].getFileName()!, '../preloads/foractivate.js')
