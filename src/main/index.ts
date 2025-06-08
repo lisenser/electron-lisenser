@@ -153,10 +153,10 @@ export class Lisenser {
     async createOtpWindow (iconPath: string, appName: string, licenseKey: string): Promise<void> {
         const window = new electron.BrowserWindow({
             width: 500,
-            height: 300,
+            height: 350,
             icon: iconPath,
             minWidth: 500,
-            minHeight: 300,
+            minHeight: 350,
             title: `${appName} - One Time Code`,
             webPreferences: {
                 preload: path.join(callsites()[0].getFileName()!, '../preloads/forotp.js')
@@ -168,10 +168,14 @@ export class Lisenser {
         return new Promise(async (resolve) => {
             window.on('close', () => resolve())
 
-            electron.ipcMain.handle('license:reset', async (_event, otp: string): Promise<boolean> => {
+            electron.ipcMain.handle('license:reset', async (_event, otp: string): Promise<string | void> => {
                 const hasReset = await client.resetLicense(otp, this.productId, licenseKey).catch(() => false)
 
-                return hasReset
+                if (!hasReset) {
+                    return 'Passcode verification failed.'
+                }
+
+                window.close()
             })
 
             electron.ipcMain.handle('license:otp:resend', async () => {
@@ -195,10 +199,10 @@ export class Lisenser {
         const appName = overrideAppName || this.appName
         const window = new electron.BrowserWindow({
             width: 600,
-            height: 300,
+            height: 350,
             icon: iconPath,
             minWidth: 600,
-            minHeight: 300,
+            minHeight: 350,
             title: `${appName} - License Key`,
             webPreferences: {
                 preload: path.join(callsites()[0].getFileName()!, '../preloads/foractivate.js')

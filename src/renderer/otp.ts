@@ -26,16 +26,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         submitButton.disabled = true
-        const success = await window.bridge.resetLicense(otpCode)
+        const maybeError = await window.bridge.resetLicense(otpCode)
         submitButton.disabled = false
-        if (!success) {
-            errorP.textContent = 'Passcode verification failed.'
+
+        if (maybeError) {
+            errorP.textContent = maybeError
 
             return
         }
-
-        // if passcode verification succeeded, we close the window
-        window.close()
     }
 
     link.onclick = async () => {

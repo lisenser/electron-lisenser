@@ -1,7 +1,7 @@
 export interface Bridge {
     activateKey: (key: string) => Promise<string | void>
     openBuyURL: () => void
-    resetLicense: (otp: string) => Promise<boolean>
+    resetLicense: (otp: string) => Promise<string | void>
     resendOtp: () => Promise<void>
 }
 
