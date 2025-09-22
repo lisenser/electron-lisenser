@@ -72,7 +72,7 @@ export class Lisenser {
     }
 
     /**
-     * Stores the provided license key on the local file system. 
+     * Stores the provided license key on the local file system.
      * If the app does not have permission to access the file system in the user's App Data folder, throws a "File Permission Error" CustomError.
      */
     private async storeLicenseKeyLocally (licenseKey: string): Promise<void> {
